@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather Forecast</title>
+  <link rel="stylesheet" href="weather.css">
+</head>
+<body>
+  <header class="header">
+    <div class="logo">Weather Pro</div>
+    <nav class="nav">
+      <ul>
+        <li><a href="index1.html">Home</a></li>
+        <li><a href="#map">map</a></li>
+        <li><a href="login.html">Login</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="#precautions">Precautions</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1>Real-Time Weather Updates</h1>
+    <div class="search-bar">
+      <input type="text" id="cityInput" placeholder="Enter city name">
+      <button id="searchButton">Search</button>
+    </div>
+  </section>
+  <br>
+
+
+  <section class="map-section" id="map">
+    <h2>Weather Forecast Map</h2>
+    <div id="weatherMap"></div>
+  </section>
+
+  <section class="weather-parameters" id="weather">
+    <div class="parameter-box">
+      <h3>Temperature</h3>
+      <p id="temperature">--</p>
+    </div>
+    <div class="parameter-box">
+      <h3>Humidity</h3>
+      <p id="humidity">--</p>
+    </div>
+    <div class="parameter-box">
+      <h3>Wind Speed</h3>
+      <p id="windSpeed">--</p>
+    </div>
+    <div class="parameter-box">
+      <h3>Pressure</h3>
+      <p id="pressure">--</p>
+    </div>
+    <div class="parameter-box">
+      <h3>UV Index</h3>
+      <p id="uvIndex">--</p>
+    </div>
+    <div class="parameter-box">
+      <h3>Cloud Cover</h3>
+      <p id="cloudCover">--</p>
+    </div>
+    <div class="parameter-box">
+      <h3>Visibility</h3>
+      <p id="visibility">--</p>
+    </div>
+  </section>
+
+  
+
+  <section class="precautions" id="precautions">
+    <h2>Precautions</h2>
+    <p id="precautionText">Enter a city to view precautionary measures.</p>
+  </section>
+
+  <footer class="footer">
+    <p>&copy; 2024 Weather Pro. All rights reserved.</p>
+  </footer>
+
+  <script src="weather.js"></script>
+</body>
+</html>

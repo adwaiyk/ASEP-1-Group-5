@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AQI Tracker</title>
+  <link rel="stylesheet" href="style.css">  
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Bar chart library -->
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <!-- Header Section with Navbar -->
+  <header class="header">
+    <div class="container">
+      <h1>AQI Tracker</h1>
+      <nav>
+        <a href="#map-section">Map</a>
+        <a href="weather.html">Weather map</a>
+        <a href="#search-section">Search</a>
+        <a href="login.html">Login</a>
+        <a href="faq.html">FAQ</a>
+        <button id="theme-toggle" onclick="toggleTheme()">🌙</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Search Section -->
+    <section id="search-section" class="section">
+      <h2>Search Location</h2>
+      <div class="input-container">
+        <input type="text" id="location-input" placeholder="Enter city or location">
+        <button id="search-btn" onclick="searchLocation()">Search</button>
+      </div>
+      <div id="search-result"></div>
+    </section>
+
+    <!-- Map Section -->
+    <section id="map-section" class="section">
+      <h2>Air Quality Map</h2>
+      <div id="map" class="map-container"></div>
+    </section>
+
+    
+
+    <!-- AQI Parameters Section -->
+    <section id="aqi-parameters" class="section">
+      <h2>Current AQI Parameters</h2>
+      <div class="aqi-box">
+        <div class="aqi-item">
+          <h3>PM2.5</h3>
+          <p id="pm25">Loading...</p>
+        </div>
+        <div class="aqi-item">
+          <h3>PM10</h3>
+          <p id="pm10">Loading...</p>
+        </div>
+        <div class="aqi-item">
+          <h3>NO2</h3>
+          <p id="no2">Loading...</p>
+        </div>
+        <div class="aqi-item">
+          <h3>SO2</h3>
+          <p id="so2">Loading...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 24-hour AQI Bar Graph Section -->
+    <section id="aqi-graph-section" class="section">
+      <h2>24-Hour Pollution Levels</h2>
+      <canvas id="aqi-bar-chart"></canvas>
+    </section>
+
+    <!-- Health Tips Section -->
+    <section id="health-tips" class="section">
+      <h2>Health Tips Based on AQI</h2>
+      <div id="health-info">Select a location to get health tips based on AQI.</div>
+    </section>
+
+
+    <div class="calendar-container">
+        
+        <div class="calendar-header">
+    
+          <button class="nav-button" id="prev-month">&lt;</button>
+          <h2 id="calendar-month-year">December 2024</h2>
+          <button class="nav-button" id="next-month">&gt;</button>
+        </div>
+        <div class="calendar-days">
+        
+          <!-- Calendar days will be dynamically injected here -->
+        </div>
+      </div>
+      <br>
+
+    <!-- Air Quality Solutions Section -->
+    <section id="air-quality-solutions" class="section">
+      <h2>Air Quality Solutions</h2>
+      <div class="solution-container">
+        <div class="solution-item">
+          <h3>Stay Indoors</h3>
+          <img src="https://www.shutterstock.com/image-vector/home-family-inside-icon-stay-260nw-1677155581.jpg" alt="">
+          <p>Limit outdoor activities, especially if you have respiratory conditions.</p>
+        </div>
+        <div class="solution-item">
+          <h3>Use Air Purifiers</h3>
+          <img src="https://static.vecteezy.com/system/resources/previews/021/268/362/non_2x/air-purifier-icon-style-free-vector.jpg" alt="">
+          <p>Invest in a high-quality air purifier to reduce indoor pollution.</p>
+        </div>
+        <div class="solution-item">
+          <h3>Wear Masks</h3>
+          <img src="https://thumbs.dreamstime.com/b/please-wear-face-mask-sign-symbol-human-red-circle-warning-attention-caution-vector-instruction-icon-transparent-191806970.jpg" alt="">
+          <p>Wear a face mask to protect against fine particles in the air.</p>
+        </div>
+        <div class="solution-item">
+          <h3>Hydrate</h3>
+          <img src="https://c8.alamy.com/comp/2BETPM3/stay-hydrated-line-icon-healthy-and-h2o-drink-water-sign-vector-graphics-a-linear-icon-on-a-white-background-eps-10-2BETPM3.jpg" alt="">
+          <p>Drink plenty of water to help flush out toxins from the body.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2024 AQI Tracker - All Rights Reserved</p>
+  </footer>
+</body>
+</html>
