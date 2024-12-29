@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global AQICN Map</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            text-align: center;
+        }
+        #map {
+            height: 500px;
+            margin: 20px auto;
+            width: 90%;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+        .widgets {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px auto;
+            width: 90%;
+        }
+        .widget {
+            width: 800px;
+            height: 500px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        .widget iframe {
+            width: 100%;
+            height: 500px;
+            border: none;
+        }
+        .home-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Global Air Quality Map</h1>
+</header>
+
+<div id="map">
+    <button class="home-btn" id="home-btn" aria-label="Return to your location">Back to Home</button>
+</div>
+
+<div class="widgets" id="widget-container">
+    <!-- Widgets will be dynamically added here -->
+</div>
+
+<script>
+    // Initialize Leaflet Map for Global View
+    const map = L.map('map', {
+        maxBounds: [[-85, -180], [85, 180]], // Prevent infinite scrolling
+        maxBoundsViscosity: 1.0
+    }).setView([20, 0], 2); // Default view centered on the world
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Add AQICN World Map as a Layer
+    L.tileLayer('https://tiles.aqicn.org/tiles/usepa-aqi/{z}/{x}/{y}.png?token=a0f8eed864ef244f62572c4611beaca3e7ea889c', {
+        attribution: 'Air Quality Data © AQICN.org',
+        maxZoom: 12
+    }).addTo(map);
+
+    let userLat, userLon;
+
+    // Get User's Location
+    function getAccurateLocation(retries = 5) {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const accuracy = position.coords.accuracy;
+                    userLat = position.coords.latitude;
+                    userLon = position.coords.longitude;
+
+                    if (accuracy <= 15 || retries <= 0) {
+                        map.setView([userLat, userLon], 15);
+
+                        const userMarker = L.marker([userLat, userLon]).addTo(map);
+                        userMarker.bindPopup(`You are here! (Accuracy: ${accuracy.toFixed(2)} meters)`).openPopup();
+
+                        // Add accuracy range circle
+                        L.circle([userLat, userLon], {
+                            color: 'blue',
+                            fillColor: '#a4c8ff',
+                            fillOpacity: 0.2,
+                            radius: accuracy
+                        }).addTo(map);
+
+                        displayAQIWidgets(userLat, userLon);
+                    } else {
+                        setTimeout(() => getAccurateLocation(retries - 1), 2000);
+                    }
+                },
+                (error) => {
+                    console.error("Geolocation error:", error);
+                    alert("Failed to retrieve location. Defaulting to global view.");
+                },
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+            );
+        } else {
+            alert("Geolocation is not supported by your browser.");
+        }
+    }
+
+    getAccurateLocation();
+
+    // Display AQI Widgets for Nearby Cities
+    function displayAQIWidgets(lat, lon) {
+        const widgetContainer = document.getElementById('widget-container');
+        const cities = ['here']; // Example city names
+
+        widgetContainer.innerHTML = ''; // Clear existing widgets
+
+        cities.forEach(city => {
+            const widgetDiv = document.createElement('div');
+            widgetDiv.className = 'widget';
+            widgetDiv.innerHTML = `<iframe src="https://aqicn.org/here/#!gl!18.5729024!73.8131968" title="AQI for ${city}" aria-label="AQI for ${city}"></iframe>`;
+            widgetContainer.appendChild(widgetDiv);
+        });
+    }
+
+    // Back to Home Button Functionality
+    document.getElementById('home-btn').addEventListener('click', () => {
+        if (userLat && userLon) {
+            map.setView([userLat, userLon], 15);
+        } else {
+            alert("User location not available yet.");
+        }
+    });
+</script>
+
+<footer>
+    <p>Data Source: AQICN.org</p>
+</footer>
+
+</body>
+</html>
