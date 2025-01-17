@@ -17,243 +17,104 @@ function toggleTheme() {
       button.textContent = '🌞'; // Dark theme icon
     }
   }
-  
-  // Fetch AQI data for a location (latitude, longitude)
-  function fetchAQIData(lat, lon) {
-    const apiKey = 'your_openweathermap_api_key'; // Replace with your OpenWeatherMap API key
-    const url = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`;
-  
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        const aqi = data.list[0].main.aqi;
-        const pm25 = data.list[0].components.pm2_5;
-        const pm10 = data.list[0].components.pm10;
-        const no2 = data.list[0].components.no2;
-        const so2 = data.list[0].components.so2;
-        const locationName = data.city.name || 'Unknown Location';
-  
-        // Update AQI data on the page
-        document.getElementById('pm25').textContent = `${pm25} µg/m³`;
-        document.getElementById('pm10').textContent = `${pm10} µg/m³`;
-        document.getElementById('no2').textContent = `${no2} ppb`;
-        document.getElementById('so2').textContent = `${so2} ppb`;
-  
-        // Display AQI status
-        let aqiStatus = '';
-        switch (aqi) {
-          case 1:
-            aqiStatus = 'Good';
-            break;
-          case 2:
-            aqiStatus = 'Fair';
-            break;
-          case 3:
-            aqiStatus = 'Moderate';
-            break;
-          case 4:
-            aqiStatus = 'Poor';
-            break;
-          case 5:
-            aqiStatus = 'Very Poor';
-            break;
-          default:
-            aqiStatus = 'Unknown';
-        }
-        document.getElementById('aqi-status').textContent = `AQI: ${aqiStatus} (${aqi})`;
-  
-        // Display location name
-        document.getElementById('search-result').textContent = `Location: ${locationName}`;
-  
-        // Display a bar graph for the past 24 hours
-        fetchPollutionHistory(lat, lon);
-  
-        // Update map with a marker for the location
-        updateMap(lat, lon);
-      })
-      .catch(error => {
-        console.error('Error fetching AQI data:', error);
-        alert('Error fetching AQI data. Please try again later.');
-      });
-  }
-  
-  // Fetch the pollution data for the last 24 hours
-  function fetchPollutionHistory(lat, lon) {
-    const apiKey = 'your_openweathermap_api_key';
-    const url = `https://api.openweathermap.org/data/2.5/air_pollution/history?lat=${lat}&lon=${lon}&start=1683585600&end=1683672000&appid=${apiKey}`;
-  
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        const times = [];
-        const pm25Values = [];
-        const pm10Values = [];
-  
-        data.forEach((entry) => {
-          times.push(new Date(entry.timestamp * 1000).toLocaleTimeString());
-          pm25Values.push(entry.components.pm2_5);
-          pm10Values.push(entry.components.pm10);
-        });
-  
-        // Create the bar chart
-        createBarChart(times, pm25Values, pm10Values);
-      })
-      .catch(error => console.error('Error fetching pollution history:', error));
-  }
-  
-  // Create the bar chart for pollution levels
-  function createBarChart(times, pm25Values, pm10Values) {
-    const ctx = document.getElementById('aqi-bar-chart').getContext('2d');
-    const chart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: times,
-        datasets: [{
-          label: 'PM2.5 (µg/m³)',
-          data: pm25Values,
-          backgroundColor: 'rgba(255, 99, 132, 0.5)',
-        }, {
-          label: 'PM10 (µg/m³)',
-          data: pm10Values,
-          backgroundColor: 'rgba(54, 162, 235, 0.5)',
-        }]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: {
-            beginAtZero: true,
-            max: 200
-          }
-        }
-      }
-    });
-  }
-  
-  // Function to handle search for a location
-  function searchLocation() {
-    const location = document.getElementById('location-input').value;
-    const apiKey = 'your_openweathermap_api_key'; // Replace with your OpenWeatherMap API key
-    const geoUrl = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}`;
-  
-    fetch(geoUrl)
-      .then(response => response.json())
-      .then(data => {
-        const lat = data.coord.lat;
-        const lon = data.coord.lon;
-        fetchAQIData(lat, lon);
-      })
-      .catch(error => {
-        console.error('Error fetching location data:', error);
-        alert('Error fetching location. Please try again.');
-      });
-  }
-  
-  // Initialize the map with a default location
-  function updateMap(lat, lon) {
-    const map = L.map('map').setView([lat, lon], 13);
-  
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
-  
-    L.marker([lat, lon]).addTo(map)
-      .bindPopup('Location: ' + lat + ', ' + lon)
-      .openPopup();
-  }
 
 
-  // Sample AQI Data (Replace with actual API data)
-const aqiData = {
-    "2024-12-01": 35,
-    "2024-12-02": 120,
-    "2024-12-03": 50,
-    "2024-12-04": 80,
-    "2024-12-05": 180,
-    "2024-12-06": 55,
-    "2024-12-07": 200,
-    "2024-12-08": 90,
-    "2024-12-09": 70,
-    // More data...
-  };
-  
-  let currentMonth = new Date().getMonth();
-  let currentYear = new Date().getFullYear();
-  
-  // Function to get AQI category class
-  function getAQIClass(aqi) {
-    if (aqi <= 50) return 'qi-good';
-    if (aqi <= 100) return 'qi-moderate';
-    if (aqi <= 150) return 'qi-poor';
-    if (aqi <= 200) return 'qi-very-poor';
-    return 'qi-hazardous';
+
+
+const menuBtn = document.getElementById('menu-btn');
+const sidebar = document.getElementById('sidebar');
+
+menuBtn.addEventListener('click', () => {
+  if (sidebar.style.left === '0px') {
+    sidebar.style.left = '-280px';
+  } else {
+    sidebar.style.left = '0px';
   }
-  
-  // Generate the calendar for the current month and year
-  function generateCalendar(month, year) {
-    const monthYearDisplay = document.getElementById('calendar-month-year');
-    const calendarDaysContainer = document.querySelector('.calendar-days');
-    
-    // Set month and year display
-    monthYearDisplay.textContent = `${new Date(year, month).toLocaleString('default', { month: 'long' })} ${year}`;
-    
-    // Get first and last day of the month
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    
-    // Clear previous days
-    calendarDaysContainer.innerHTML = '';
-  
-    // Generate empty slots for the days before the first day of the month
-    for (let i = 0; i < firstDay.getDay(); i++) {
-      const emptySlot = document.createElement('div');
-      calendarDaysContainer.appendChild(emptySlot);
-    }
-  
-    // Generate days of the month
-    for (let i = 1; i <= lastDay.getDate(); i++) {
-      const date = new Date(year, month, i);
-      const dateString = date.toISOString().split('T')[0];
-      const dayElement = document.createElement('div');
-      
-      // Assign AQI class based on the data
-      const aqi = aqiData[dateString] || 0;
-      const aqiClass = getAQIClass(aqi);
-      dayElement.className = `calendar-day ${aqiClass}`;
-      dayElement.textContent = i;
-      
-      // Add click event for AQI info
-      dayElement.addEventListener('click', () => {
-        alert(`AQI for ${dateString}: ${aqiData[dateString] || 'No data available'}`);
-      });
-      
-      calendarDaysContainer.appendChild(dayElement);
-    }
+});
+
+
+
+
+
+ /*// Initialize Leaflet Map for Global View
+ const map = L.map('map', {
+  maxBounds: [[-85, -180], [85, 180]], // Prevent infinite scrolling
+  maxBoundsViscosity: 1.0
+}).setView([20, 0], 2); // Default view centered on the world
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© OpenStreetMap contributors'
+}).addTo(map);
+
+// Add AQICN World Map as a Layer
+L.tileLayer('https://tiles.aqicn.org/tiles/usepa-aqi/{z}/{x}/{y}.png?token=a0f8eed864ef244f62572c4611beaca3e7ea889c', {
+  attribution: 'Air Quality Data © AQICN.org',
+  maxZoom: 12
+}).addTo(map);
+
+let userLat, userLon;
+
+// Get User's Location
+function getAccurateLocation(retries = 5) {
+  if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+          (position) => {
+              const accuracy = position.coords.accuracy;
+              userLat = position.coords.latitude;
+              userLon = position.coords.longitude;
+
+              if (accuracy <= 15 || retries <= 0) {
+                  map.setView([userLat, userLon], 15);
+
+                  const userMarker = L.marker([userLat, userLon]).addTo(map);
+                  userMarker.bindPopup(`You are here! (Accuracy: ${accuracy.toFixed(2)} meters)`).openPopup();
+
+                  // Add accuracy range circle
+                  L.circle([userLat, userLon], {
+                      color: 'blue',
+                      fillColor: '#a4c8ff',
+                      fillOpacity: 0.2,
+                      radius: accuracy
+                  }).addTo(map);
+
+                  displayAQIWidgets(userLat, userLon);
+              } else {
+                  setTimeout(() => getAccurateLocation(retries - 1), 2000);
+              }
+          },
+          (error) => {
+              console.error("Geolocation error:", error);
+              alert("Failed to retrieve location. Defaulting to global view.");
+          },
+          { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      );
+  } else {
+      alert("Geolocation is not supported by your browser.");
   }
-  
-  // Previous month button functionality
-  document.getElementById('prev-month').addEventListener('click', () => {
-    if (currentMonth === 0) {
-      currentMonth = 11;
-      currentYear -= 1;
-    } else {
-      currentMonth -= 1;
-    }
-    generateCalendar(currentMonth, currentYear);
+}
+
+getAccurateLocation();
+
+// Display AQI Widgets for Nearby Cities
+function displayAQIWidgets(lat, lon) {
+  const widgetContainer = document.getElementById('widget-container');
+  const cities = ['here']; // Example city names
+
+  widgetContainer.innerHTML = ''; // Clear existing widgets
+
+  cities.forEach(city => {
+      const widgetDiv = document.createElement('div');
+      widgetDiv.className = 'widget';
+      widgetDiv.innerHTML = `<iframe src="https://aqicn.org/here/#!gl!18.5729024!73.8131968" title="AQI for ${city}" aria-label="AQI for ${city}"></iframe>`;
+      widgetContainer.appendChild(widgetDiv);
   });
-  
-  // Next month button functionality
-  document.getElementById('next-month').addEventListener('click', () => {
-    if (currentMonth === 11) {
-      currentMonth = 0;
-      currentYear += 1;
-    } else {
-      currentMonth += 1;
-    }
-    generateCalendar(currentMonth, currentYear);
-  });
-  
-  // Initialize calendar for current month
-  generateCalendar(currentMonth, currentYear);
-  
-  
+}
+
+// Back to Home Button Functionality
+document.getElementById('home-btn').addEventListener('click', () => {
+  if (userLat && userLon) {
+      map.setView([userLat, userLon], 15);
+  } else {
+      alert("User location not available yet.");
+  }
+});*/

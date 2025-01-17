@@ -1,4 +1,38 @@
-// script.js
+// Theme toggle function
+function toggleTheme() {
+  const body = document.body;
+  const button = document.getElementById('theme-toggle');
+
+  if (body.classList.contains('dark')) {
+    body.classList.remove('dark');
+    body.classList.add('light');
+    button.classList.remove('dark');
+    button.classList.add('light');
+    button.textContent = '🌙'; // Light theme icon
+  } else {
+    body.classList.remove('light');
+    body.classList.add('dark');
+    button.classList.remove('light');
+    button.classList.add('dark');
+    button.textContent = '🌞'; // Dark theme icon
+  }
+}
+
+
+
+
+const menuBtn = document.getElementById('menu-btn');
+const sidebar = document.getElementById('sidebar');
+
+menuBtn.addEventListener('click', () => {
+if (sidebar.style.left === '0px') {
+  sidebar.style.left = '-280px';
+} else {
+  sidebar.style.left = '0px';
+}
+});
+
+/* script.js
 document.getElementById("searchButton").addEventListener("click", fetchWeatherData);
 
 function fetchWeatherData() {
@@ -42,4 +76,4 @@ function getPrecautions(weatherType) {
     default:
       return "Check local weather updates for precautions.";
   }
-}
+}*/
